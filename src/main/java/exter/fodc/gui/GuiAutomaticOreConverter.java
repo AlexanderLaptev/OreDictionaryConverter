@@ -69,7 +69,7 @@ public class GuiAutomaticOreConverter extends GuiContainer
         itemRender.zLevel = 200.0F;
         FontRenderer font = null;
         if (item != null) font = item.getItem().getFontRenderer(item);
-        if (font == null) font = fontRendererObj;
+        if (font == null) font = fontRenderer;
         itemRender.renderItemAndEffectIntoGUI(item, window_x + x, window_y + y);
         itemRender.renderItemOverlayIntoGUI(font, item, window_x + x, window_y + y, null);
         zLevel = 0.0F;
@@ -137,9 +137,9 @@ public class GuiAutomaticOreConverter extends GuiContainer
   @Override
   protected void drawGuiContainerForegroundLayer(int par1, int par2)
   {
-    fontRendererObj.drawString("Ore Autoconverter", 8, 6, 4210752);
-    fontRendererObj.drawString("Targets", 8, 65, 4210752);
-    fontRendererObj.drawString("Inventory", 8, this.ySize - 96 + 2, 4210752);
+    fontRenderer.drawString("Ore Autoconverter", 8, 6, 4210752);
+    fontRenderer.drawString("Targets", 8, 65, 4210752);
+    fontRenderer.drawString("Inventory", 8, this.ySize - 96 + 2, 4210752);
   }
 
   /**

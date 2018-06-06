@@ -1,9 +1,8 @@
 package exter.fodc;
 
-import net.minecraft.init.Blocks;
-import net.minecraft.init.Items;
+import net.minecraft.block.Block;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemBlock;
-import net.minecraft.item.ItemStack;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Mod;
@@ -11,8 +10,9 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent;
-import net.minecraftforge.fml.common.event.FMLMissingMappingsEvent.MissingMapping;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.event.RegistryEvent.MissingMappings;
+import net.minecraftforge.event.RegistryEvent.MissingMappings.Mapping;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -21,6 +21,7 @@ import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.oredict.OreDictionary;
+import net.minecraftforge.registries.IForgeRegistry;
 
 import org.apache.logging.log4j.Logger;
 
@@ -36,7 +37,7 @@ import exter.fodc.tileentity.TileEntityAutomaticOreConverter;
     modid = ModOreDicConvert.MODID,
     name = ModOreDicConvert.MODNAME,
     version = ModOreDicConvert.MODVERSION,
-    dependencies = "required-after:forge@[13.19.1.2189,)"
+    dependencies = "required-after:forge@[14.23.2.2616,)"
     )
 public class ModOreDicConvert
 {
@@ -44,22 +45,38 @@ public class ModOreDicConvert
   public static final String MODNAME = "Ore Dictionary Converter";
   public static final String MODVERSION = "1.10.0";
 
-  public static ItemOreConverter item_oreconverter = null;
+  public static ItemOreConverter item_oreconverter = new ItemOreConverter();
   @Instance("fodc")
   public static ModOreDicConvert instance;
 
   // Says where the client and server 'proxy' code is loaded.
   @SidedProxy(clientSide = "exter.fodc.proxy.ClientODCProxy", serverSide = "exter.fodc.proxy.CommonODCProxy")
   public static CommonODCProxy proxy;
-  public static BlockOreConversionTable block_oreconvtable;
-  public static BlockAutomaticOreConverter block_oreautoconv;
-    
+  public static BlockOreConversionTable block_oreconvtable = new BlockOreConversionTable();
+  public static BlockAutomaticOreConverter block_oreautoconv = new BlockAutomaticOreConverter();
+  
   public static Logger log;
   
   public static boolean log_orenames;
 
   public static SimpleNetworkWrapper network_channel;
+  
+  
+  @Mod.EventBusSubscriber
+  public static class RegistrationHandler {
+    @SubscribeEvent
+    public static void registerItems(RegistryEvent.Register<Item> event) {
+    	IForgeRegistry<Item> registry = event.getRegistry();
+        registry.registerAll(item_oreconverter);
+        registry.registerAll((new ItemBlock(block_oreconvtable).setRegistryName(block_oreconvtable.getRegistryName())),
+        		(new ItemBlock(block_oreautoconv).setRegistryName(block_oreautoconv.getRegistryName())));
+    }
     
+    @SubscribeEvent
+    public static void registerBlocks(RegistryEvent.Register<Block> event) {
+        event.getRegistry().registerAll(block_oreconvtable, block_oreautoconv);
+    }
+  }
 
   @EventHandler
   public void preInit(FMLPreInitializationEvent event)
@@ -73,18 +90,19 @@ public class ModOreDicConvert
     
     
     NetworkRegistry.INSTANCE.registerGuiHandler(this, proxy);
-
+    
+    /*
     block_oreconvtable = new BlockOreConversionTable();
     block_oreautoconv = new BlockAutomaticOreConverter();
     item_oreconverter = new ItemOreConverter();
-
+    
     GameRegistry.register(item_oreconverter);
 
     GameRegistry.register(block_oreconvtable);
     GameRegistry.register(block_oreautoconv);
     GameRegistry.register(new ItemBlock(block_oreconvtable).setRegistryName(block_oreconvtable.getRegistryName()));
     GameRegistry.register(new ItemBlock(block_oreautoconv).setRegistryName(block_oreautoconv.getRegistryName()));
-
+    */
     
     
     network_channel = NetworkRegistry.INSTANCE.newSimpleChannel("EXTER.FODC");
@@ -98,6 +116,7 @@ public class ModOreDicConvert
     GameRegistry.registerTileEntity(TileEntityAutomaticOreConverter.class, "AutoOreConverter");
     proxy.init();
 
+    /*
     ItemStack iron_stack = new ItemStack(Items.IRON_INGOT);
     ItemStack redstone_stack = new ItemStack(Items.REDSTONE);
     ItemStack workbench_stack = new ItemStack(Blocks.CRAFTING_TABLE);
@@ -128,6 +147,7 @@ public class ModOreDicConvert
         'O', oreconverter_stack,
         'R', redstone_stack,
         'C', cobble_stack);
+    */
   }
 
 
@@ -148,41 +168,40 @@ public class ModOreDicConvert
     MinecraftForge.EVENT_BUS.register(this);
   }
 
-  @EventHandler
-  public void remap(FMLMissingMappingsEvent event)
+  @SubscribeEvent
+  public void remapBlocks(MissingMappings<Block> event)
   {
-    for(MissingMapping map:event.get())
+    for(Mapping<Block> mapping:event.getAllMappings())
     {
-      String name = map.resourceLocation.getResourcePath();
-      if(name.equals("oreconverter") && map.type == GameRegistry.Type.ITEM)
+      String name = mapping.key.getResourcePath();
+      if(name.equals("oreconvtable"))
+      {
+        mapping.remap(block_oreconvtable);
+      } else if(name.equals("oreautoconverter"))
+      {
+        mapping.remap(block_oreautoconv);
+      } else
+      {
+        mapping.warn();
+      }
+    }
+  }
+  
+  @SubscribeEvent
+  public void remapItems(MissingMappings<Item> event)
+  {
+    for(Mapping<Item> map:event.getAllMappings())
+    {
+      String name = map.key.getResourcePath();
+      if(name.equals("oreconverter"))
       {
         map.remap(item_oreconverter);
       } else if(name.equals("oreconvtable"))
       {
-        switch(map.type)
-        {
-          case BLOCK:
-            map.remap(block_oreconvtable);
-            break;
-          case ITEM:
-            map.remap(ItemBlock.getItemFromBlock(block_oreconvtable));
-            break;
-          default:
-            break;
-        }
+        map.remap(ItemBlock.getItemFromBlock(block_oreconvtable));
       } else if(name.equals("oreautoconverter"))
       {
-        switch(map.type)
-        {
-          case BLOCK:
-            map.remap(block_oreautoconv);
-            break;
-          case ITEM:
-            map.remap(ItemBlock.getItemFromBlock(block_oreautoconv));
-            break;
-          default:
-            break;
-        }
+        map.remap(ItemBlock.getItemFromBlock(block_oreautoconv));
       } else
       {
         map.warn();

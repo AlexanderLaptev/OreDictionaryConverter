@@ -1,0 +1,19 @@
+{
+  "result": {
+    "item": "fodc:ore_conv_table"
+  },
+  "pattern": [
+    "O",
+    "W"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "O": {
+      "item": "fodc:ore_converter"
+    },
+    "W": {
+      "type": "forge:ore_dict",
+      "ore": "plankWood"
+    }
+  }
+}

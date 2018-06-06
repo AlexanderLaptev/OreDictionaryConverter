@@ -64,7 +64,7 @@ public class MessageODC implements IMessage
       World world;
       if(ctx.side == Side.SERVER)
       {
-        world = ctx.getServerHandler().playerEntity.world;
+        world = ctx.getServerHandler().player.world;
         main_thread = (WorldServer)world;
       } else
       {

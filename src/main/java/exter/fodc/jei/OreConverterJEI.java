@@ -7,6 +7,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import exter.fodc.ModOreDicConvert;
 import exter.fodc.registry.OreNameRegistry;
 import mezz.jei.api.IGuiHelper;
 import mezz.jei.api.IJeiHelpers;
@@ -162,6 +163,11 @@ public class OreConverterJEI
         }
       }
     }
+
+	@Override
+	public String getModName() {
+		return ModOreDicConvert.MODNAME;
+	}
   }
 
   static public class Handler implements IRecipeHandler<Wrapper>

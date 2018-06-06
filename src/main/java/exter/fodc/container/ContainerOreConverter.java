@@ -252,7 +252,7 @@ public class ContainerOreConverter extends Container
               if (ItemStack.areItemStacksEqual(slot.getStack(),transfer_itemstack)
                   && ItemStack.areItemsEqualIgnoreDurability(slot.getStack(),transfer_itemstack))
               {
-                retrySlotClick(slot_index, drag, true, player);
+                slotClick(slot_index, drag, ClickType.QUICK_MOVE, player);
               }
           }
       }

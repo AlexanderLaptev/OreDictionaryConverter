@@ -1,0 +1,25 @@
+{
+  "result": {
+    "item": "fodc:ore_autoconverter"
+  },
+  "pattern": [
+    "IOI",
+    "CRC",
+    "ICI"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+	"O": {
+      "item": "fodc:ore_converter"
+    },
+	"R": {
+      "item": "minecraft:redstone"
+    },
+    "C": {
+      "item": "minecraft:cobblestone"
+    }
+  }
+}

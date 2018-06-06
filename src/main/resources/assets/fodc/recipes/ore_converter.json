@@ -1,0 +1,22 @@
+{
+  "result": {
+    "item": "fodc:ore_converter"
+  },
+  "pattern": [
+    "I",
+    "C",
+    "B"
+  ],
+  "type": "forge:ore_shaped",
+  "key": {
+    "I": {
+      "item": "minecraft:iron_ingot"
+    },
+    "C": {
+      "item": "minecraft:cobblestone"
+    },
+    "B": {
+      "item": "minecraft:crafting_table"
+    }
+  }
+}

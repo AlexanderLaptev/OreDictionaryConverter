@@ -41,8 +41,8 @@ public class GuiOreConverter extends GuiContainer
    */
   protected void drawGuiContainerForegroundLayer(int par1, int par2)
   {
-    fontRendererObj.drawString("Ore Converter", 23, 6, 4210752);
-    fontRendererObj.drawString("Inventory", 8, ySize - 96 + 2, 4210752);
+    fontRenderer.drawString("Ore Converter", 23, 6, 4210752);
+    fontRenderer.drawString("Inventory", 8, ySize - 96 + 2, 4210752);
   }
 
   /**
